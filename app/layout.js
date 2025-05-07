@@ -15,8 +15,11 @@ const geistMono = Geist_Mono({
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} m-auto w-[400px] antialiased`}>
-        <div className="h-[95vh]">{children}</div>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} m-auto mt-3 w-[500px] rounded-md border-1 border-solid px-3 py-4 antialiased`}
+      >
+        <div className="h-[90vh] overflow-auto p-3">{children}</div>
+        <br />
         <footer className="flex items-center justify-between">
           <img src="./subway logo.png" alt="subway logo" className="h-max w-[120px]" />
           <div className="flex items-center gap-[20px]">
