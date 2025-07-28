@@ -73,17 +73,22 @@ export default function CheckoutPage() {
                 <p className="mb-2 font-medium text-sm">₹{item.price}</p>
 
                 {item.selectedCustomizations &&
-                  Object.entries(item.selectedCustomizations).map(([category, options]) => (
-                    <div key={category} className="mb-1 text-sm">
-                      <span className="font-medium capitalize">{category.replace("_", " ")}:</span> {options.join(", ")}
-                    </div>
-                  ))}
+                  Object.entries(item.selectedCustomizations).map(([category, options]) => {
+                    if (!Array.isArray(options)) return null;
+
+                    return (
+                      <div key={category} className="mb-1 text-sm">
+                        <span className="font-medium capitalize">{category.replace("_", " ")}:</span>{" "}
+                        {options.join(", ")}
+                      </div>
+                    );
+                  })}
               </div>
             ))}
 
             {/* Email Input */}
             <div className="mt-6">
-              {/** biome-ignore lint/a11y/noLabelWithoutControl: <explanation> */}
+              {/** biome-ignore lint/a11y/noLabelWithoutControl: <> */}
               <label className="mb-2 block font-medium text-sm">Email address</label>
               <input
                 type="email"
