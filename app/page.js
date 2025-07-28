@@ -6,6 +6,10 @@ export default function Home() {
   const [menu, setMenu] = useState(undefined);
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState("all");
+
+  const [showBestsellers, setShowBestsellers] = useState(false);
+  const [sortBy, setSortBy] = useState(null); // "calories", "popularity", "protein"
 
   useEffect(() => {
     fetch("/api/dummySubwayStore")
@@ -21,7 +25,7 @@ export default function Home() {
   }
 
   function filterItems(items) {
-    return items.filter(matchesSearch);
+    return items.filter((item) => matchesSearch(item) && (filterType === "all" || item.type === filterType));
   }
 
   function renderItems(items, title) {
@@ -107,6 +111,36 @@ export default function Home() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full rounded-md border px-4 py-2 text-lg"
         />
+      </div>
+
+      <div className="mb-6 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setFilterType("all")}
+          className={`rounded border px-4 py-2 ${
+            filterType === "all" ? "bg-black text-white" : "text-black hover:bg-gray-100"
+          }`}
+        >
+          All
+        </button>
+        <button
+          type="button"
+          onClick={() => setFilterType("vegetarian")}
+          className={`rounded border px-4 py-2 ${
+            filterType === "vegetarian" ? "bg-green-600 text-white" : "text-black hover:bg-gray-100"
+          }`}
+        >
+          Vegetarian
+        </button>
+        <button
+          type="button"
+          onClick={() => setFilterType("non-vegetarian")}
+          className={`rounded border px-4 py-2 ${
+            filterType === "non-vegetarian" ? "bg-red-600 text-white" : "text-black hover:bg-gray-100"
+          }`}
+        >
+          Non-Vegetarian
+        </button>
       </div>
 
       {renderItems(menu.subs, "Subs")}
