@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import ItemModal from "@/components/ItemModal";
 
 export default function Home() {
@@ -95,62 +96,76 @@ export default function Home() {
   if (!menu) return <div className="p-4">Loading...</div>;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6 w-full">
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-md border px-4 py-2 text-lg"
-        />
-      </div>
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-8">
+      <div>
+        {/* Search input */}
+        <div className="mb-6 w-full">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border px-4 py-2 text-lg"
+          />
+        </div>
 
-      <div className="mb-6 flex flex-wrap items-center gap-2">
-        {["all", "vegetarian", "non-vegetarian"].map((type) => (
+        {/* Filters */}
+        <div className="mb-6 flex flex-wrap items-center gap-2">
+          {["all", "vegetarian", "non-vegetarian"].map((type) => (
+            <button
+              type="button"
+              key={type}
+              onClick={() => setFilterType(type)}
+              className={`rounded border px-4 py-2 ${
+                filterType === type
+                  ? type === "vegetarian"
+                    ? "bg-green-600 text-white"
+                    : type === "non-vegetarian"
+                      ? "bg-red-600 text-white"
+                      : "bg-black text-white"
+                  : "text-black hover:bg-gray-100"
+              }`}
+            >
+              {type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ")}
+            </button>
+          ))}
+
           <button
             type="button"
-            key={type}
-            onClick={() => setFilterType(type)}
-            className={`rounded border px-4 py-2 ${
-              filterType === type
-                ? type === "vegetarian"
-                  ? "bg-green-600 text-white"
-                  : type === "non-vegetarian"
-                    ? "bg-red-600 text-white"
-                    : "bg-black text-white"
-                : "text-black hover:bg-gray-100"
-            }`}
+            onClick={() => setShowBestsellers((prev) => !prev)}
+            className="flex items-center justify-center rounded border px-4 py-2 hover:bg-gray-100"
           >
-            {type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ")}
+            <div className={`mr-2 h-3.5 w-3.5 rounded-full ${showBestsellers ? "bg-green-500" : "bg-red-500"}`} />
+            Bestseller
           </button>
-        ))}
 
-        <button
-          type="button"
-          onClick={() => setShowBestsellers((prev) => !prev)}
-          className="flex items-center justify-center rounded border px-4 py-2 hover:bg-gray-100"
-        >
-          <div className={`mr-2 h-3.5 w-3.5 rounded-full ${showBestsellers ? "bg-green-500" : "bg-red-500"}`} />
-          Bestseller
-        </button>
+          <select
+            value={sortBy || ""}
+            onChange={(e) => setSortBy(e.target.value || null)}
+            className="rounded border px-4 py-2 text-black hover:bg-gray-100"
+          >
+            <option value="">Sort by</option>
+            <option value="popularity">Popularity</option>
+            <option value="protein_g">Protein</option>
+            <option value="spice_level">Spice Level</option>
+            <option value="prep_time_min">Prep Time</option>
+          </select>
+        </div>
 
-        <select
-          value={sortBy || ""}
-          onChange={(e) => setSortBy(e.target.value || null)}
-          className="rounded border px-4 py-2 text-black hover:bg-gray-100"
-        >
-          <option value="">Sort by</option>
-          <option value="popularity">Popularity</option>
-          <option value="protein_g">Protein</option>
-          <option value="spice_level">Spice Level</option>
-          <option value="prep_time_min">Prep Time</option>
-        </select>
+        {/* Items */}
+        {renderItems(menu.subs, "Subs")}
+        {renderItems(menu.wraps, "Wraps")}
+        {renderItems(menu.beverages, "Beverages")}
       </div>
 
-      {renderItems(menu.subs, "Subs")}
-      {renderItems(menu.wraps, "Wraps")}
-      {renderItems(menu.beverages, "Beverages")}
+      {/* Checkout Button */}
+      <div className="mt-auto pt-8">
+        <Link href="/checkout">
+          <button type="button" className="w-full rounded bg-black py-3 text-white hover:bg-gray-800">
+            Go to Checkout
+          </button>
+        </Link>
+      </div>
 
       {/* Modal */}
       <ItemModal item={selectedItem} onClose={() => setSelectedItem(null)} onAddToCart={handleAddToCart} />
