@@ -44,7 +44,8 @@ export default function CheckoutPage() {
     // Clear cart
     setCart([]);
     localStorage.removeItem("cart");
-    alert("Order placed!");
+
+    window.location.replace("/thank-you");
   }
 
   return (
