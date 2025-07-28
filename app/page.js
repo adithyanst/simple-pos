@@ -25,7 +25,24 @@ export default function Home() {
   }
 
   function filterItems(items) {
-    return items.filter((item) => matchesSearch(item) && (filterType === "all" || item.type === filterType));
+    const filtered = items.filter(
+      (item) =>
+        matchesSearch(item) &&
+        (filterType === "all" || item.type === filterType) &&
+        (!showBestsellers || item.popularity >= 90),
+    );
+
+    if (sortBy === "popularity") {
+      filtered.sort((a, b) => b.popularity - a.popularity);
+    } else if (sortBy === "protein_g") {
+      filtered.sort((a, b) => b.protein_g - a.protein_g);
+    } else if (sortBy === "spice_level") {
+      filtered.sort((a, b) => b.spice_level - a.spice_level);
+    } else if (sortBy === "prep_time_min") {
+      filtered.sort((a, b) => a.prep_time_min - b.prep_time_min);
+    }
+
+    return filtered;
   }
 
   function renderItems(items, title) {
@@ -113,34 +130,49 @@ export default function Home() {
         />
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        {/* Type Filter Buttons */}
+        {["all", "vegetarian", "non-vegetarian"].map((type) => (
+          <button
+            type="button"
+            key={type}
+            onClick={() => setFilterType(type)}
+            className={`rounded border px-4 py-2 ${
+              filterType === type
+                ? type === "vegetarian"
+                  ? "bg-green-600 text-white"
+                  : type === "non-vegetarian"
+                    ? "bg-red-600 text-white"
+                    : "bg-black text-white"
+                : "text-black hover:bg-gray-100"
+            }`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ")}
+          </button>
+        ))}
+
+        {/* Bestseller Toggle */}
         <button
           type="button"
-          onClick={() => setFilterType("all")}
-          className={`rounded border px-4 py-2 ${
-            filterType === "all" ? "bg-black text-white" : "text-black hover:bg-gray-100"
-          }`}
+          onClick={() => setShowBestsellers((prev) => !prev)}
+          className="flex items-center justify-center rounded border px-4 py-2 hover:bg-gray-100"
         >
-          All
+          <div className={`mr-2 h-3.5 w-3.5 rounded-full ${showBestsellers ? "bg-green-500" : "bg-red-500"}`} />
+          Bestseller
         </button>
-        <button
-          type="button"
-          onClick={() => setFilterType("vegetarian")}
-          className={`rounded border px-4 py-2 ${
-            filterType === "vegetarian" ? "bg-green-600 text-white" : "text-black hover:bg-gray-100"
-          }`}
+
+        {/* Sort Dropdown */}
+        <select
+          value={sortBy || ""}
+          onChange={(e) => setSortBy(e.target.value || null)}
+          className="rounded border px-4 py-2 text-black hover:bg-gray-100"
         >
-          Vegetarian
-        </button>
-        <button
-          type="button"
-          onClick={() => setFilterType("non-vegetarian")}
-          className={`rounded border px-4 py-2 ${
-            filterType === "non-vegetarian" ? "bg-red-600 text-white" : "text-black hover:bg-gray-100"
-          }`}
-        >
-          Non-Vegetarian
-        </button>
+          <option value="">Sort by</option>
+          <option value="popularity">Popularity</option>
+          <option value="protein_g">Protein</option>
+          <option value="spice_level">Spice Level</option>
+          <option value="prep_time_min">Prep Time</option>
+        </select>
       </div>
 
       {renderItems(menu.subs, "Subs")}
