@@ -15,13 +15,13 @@ export default function CheckoutPage() {
     }
   }, []);
 
-  const removeFromCart = (cartId) => {
+  function removeFromCart(cartId) {
     const updatedCart = cart.filter((item) => item.cartId !== cartId);
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
+  }
 
-  const finishOrder = () => {
+  async function finishOrder() {
     if (!email.trim()) {
       alert("Please enter your email.");
       return;
@@ -32,13 +32,20 @@ export default function CheckoutPage() {
       return;
     }
 
-    console.log("Order submitted:", { email, cart });
+    await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        data: localStorage.getItem("cart"),
+      }),
+    });
 
     // Clear cart
     setCart([]);
     localStorage.removeItem("cart");
     alert("Order placed!");
-  };
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
