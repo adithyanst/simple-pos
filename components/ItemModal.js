@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ItemModal({ item, onClose, onAddToCart }) {
   const [selectedOptions, setSelectedOptions] = useState({});
+
+  useEffect(() => {
+    setSelectedOptions({});
+  }, [item]);
 
   if (!item) return null;
 
@@ -11,17 +15,20 @@ export default function ItemModal({ item, onClose, onAddToCart }) {
   const customizations = item.customizations || {};
 
   function toggleOption(category, option) {
+    const isRadio = category === "bread";
+
     setSelectedOptions((prev) => {
-      const isRadio = category === "bread";
       if (isRadio) {
-        return { ...prev, [category]: option }; // Only one selection
+        return { ...prev, [category]: option };
       }
+
       const categoryOptions = new Set(prev[category] || []);
       if (categoryOptions.has(option)) {
         categoryOptions.delete(option);
       } else {
         categoryOptions.add(option);
       }
+
       return {
         ...prev,
         [category]: Array.from(categoryOptions),
@@ -30,11 +37,18 @@ export default function ItemModal({ item, onClose, onAddToCart }) {
   }
 
   function handleAddToCart() {
+    const { name, image, description, price, protein_g } = item;
+
     const cartItem = {
-      ...item,
+      name,
+      image,
+      description,
+      price,
+      protein_g,
       selectedCustomizations: selectedOptions,
       cartId: Date.now(),
     };
+
     onAddToCart(cartItem);
     onClose();
   }
