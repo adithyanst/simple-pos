@@ -2,7 +2,7 @@
 <table>
     <tbody>
         <tr>
-            <td><a href="https://akagi.adithya.zip/" target="_blank">NST WAP Capstone Project For Sem 2</a></td>
+            <td> WAP Capstone Project For Sem 2</td>
             <td>Topic: E-Commerce</td>
         </tr>
     </tbody>
