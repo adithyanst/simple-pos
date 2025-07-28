@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [menu, setMenu] = useState(undefined);
-
   const [selectedItem, setSelectedItem] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetch("/api/dummySubwayStore")
@@ -13,31 +13,45 @@ export default function Home() {
       .then((jsonres) => setMenu(jsonres.menu));
   }, []);
 
-  if (!menu) return <div className="p-4">Loading...</div>;
+  function matchesSearch(item) {
+    return (
+      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
 
-  const renderItems = (items, title) => (
-    <div className="mb-8">
-      <h2 className="mb-4 font-bold text-2xl">{title}</h2>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        {items.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className="flex cursor-pointer flex-col rounded-xl bg-white p-4 shadow transition hover:shadow-lg"
-            onClick={() => setSelectedItem(item)}
-          >
-            <img src={item.image} alt={item.name} className="w-full h-40 object-cover rounded-lg mb-3" />
-            <h3 className="font-semibold text-lg">{item.name}</h3>
-            <p className="mb-2 text-gray-600 text-sm">{item.description}</p>
-            <div className="mb-1 text-gray-800 text-sm">₹{item.price}</div>
-            <div className="mb-2 text-gray-500 text-xs capitalize">{item.type}</div>
-          </button>
-        ))}
+  function filterItems(items) {
+    return items.filter(matchesSearch);
+  }
+
+  function renderItems(items, title) {
+    const filtered = filterItems(items);
+    if (filtered.length === 0) return null;
+
+    return (
+      <div className="mb-8">
+        <h2 className="mb-4 font-bold text-2xl">{title}</h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {filtered.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className="flex cursor-pointer flex-col rounded-xl bg-white p-4 shadow transition hover:shadow-lg"
+              onClick={() => setSelectedItem(item)}
+            >
+              <img src={item.image} alt={item.name} className="mb-3 h-40 w-full rounded-lg object-cover" />
+              <h3 className="font-semibold text-lg">{item.name}</h3>
+              <p className="mb-2 text-gray-600 text-sm">{item.description}</p>
+              <div className="mb-1 text-gray-800 text-sm">₹{item.price}</div>
+              <div className="mb-2 text-gray-500 text-xs capitalize">{item.type}</div>
+            </button>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 
-  const renderModal = () => {
+  function renderModal() {
     if (!selectedItem) return null;
     const { name, image, description, protein_g, customizations } = selectedItem;
 
@@ -45,8 +59,8 @@ export default function Home() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
         <div className="relative w-full max-w-md rounded-xl bg-white p-6">
           <button
-            onClick={() => setSelectedItem(null)}
             type="button"
+            onClick={() => setSelectedItem(null)}
             className="absolute top-2 right-3 text-gray-500 text-lg hover:text-black"
           >
             ×
@@ -72,21 +86,32 @@ export default function Home() {
             ))}
 
           <div className="mt-6">
-            <button className="w-full rounded bg-black py-2 text-white hover:bg-gray-800" type="button">
+            <button type="button" className="w-full rounded bg-black py-2 text-white hover:bg-gray-800">
               Add to order
             </button>
           </div>
         </div>
       </div>
     );
-  };
+  }
+
+  if (!menu) return <div className="p-4">Loading...</div>;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      <div className="mb-6 w-full">
+        <input
+          type="text"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full rounded-md border px-4 py-2 text-lg"
+        />
+      </div>
+
       {renderItems(menu.subs, "Subs")}
       {renderItems(menu.wraps, "Wraps")}
       {renderItems(menu.beverages, "Beverages")}
-
       {renderModal()}
     </div>
   );
