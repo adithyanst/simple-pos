@@ -12,6 +12,10 @@ export default function ItemModal({ item, onClose, onAddToCart }) {
 
   function toggleOption(category, option) {
     setSelectedOptions((prev) => {
+      const isRadio = category === "bread";
+      if (isRadio) {
+        return { ...prev, [category]: option }; // Only one selection
+      }
       const categoryOptions = new Set(prev[category] || []);
       if (categoryOptions.has(option)) {
         categoryOptions.delete(option);
@@ -29,10 +33,10 @@ export default function ItemModal({ item, onClose, onAddToCart }) {
     const cartItem = {
       ...item,
       selectedCustomizations: selectedOptions,
-      cartId: Date.now(), // unique identifier
+      cartId: Date.now(),
     };
     onAddToCart(cartItem);
-    onClose(); // Close modal
+    onClose();
   }
 
   return (
@@ -52,24 +56,32 @@ export default function ItemModal({ item, onClose, onAddToCart }) {
         <p className="mb-4 text-gray-500 text-xs">Protein: {protein_g}g</p>
 
         {Object.keys(customizations).length > 0 &&
-          Object.entries(customizations).map(([category, options]) => (
-            <div key={category} className="mb-4">
-              <h4 className="mb-1 font-semibold text-sm capitalize">{category.replace("_", " ")}</h4>
-              <div className="flex flex-wrap gap-2">
-                {options.map((opt) => (
-                  <label key={opt} className="cursor-pointer rounded border px-2 py-1 text-sm hover:bg-gray-100">
-                    <input
-                      type="checkbox"
-                      checked={selectedOptions[category]?.includes(opt) || false}
-                      onChange={() => toggleOption(category, opt)}
-                      className="mr-1"
-                    />
-                    {opt}
-                  </label>
-                ))}
+          Object.entries(customizations).map(([category, options]) => {
+            const isRadio = category === "bread";
+            return (
+              <div key={category} className="mb-4">
+                <h4 className="mb-1 font-semibold text-sm capitalize">{category.replace("_", " ")}</h4>
+                <div className="flex flex-wrap gap-2">
+                  {options.map((opt) => (
+                    <label key={opt} className="cursor-pointer rounded border px-2 py-1 text-sm hover:bg-gray-100">
+                      <input
+                        type={isRadio ? "radio" : "checkbox"}
+                        name={isRadio ? category : `${category}-${opt}`}
+                        checked={
+                          isRadio
+                            ? selectedOptions[category] === opt
+                            : selectedOptions[category]?.includes(opt) || false
+                        }
+                        onChange={() => toggleOption(category, opt)}
+                        className="mr-1"
+                      />
+                      {opt}
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
         <div className="mt-6">
           <button
