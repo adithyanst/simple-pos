@@ -1,9 +1,39 @@
 "use client";
 
-export default function ItemModal({ item, onClose }) {
+import { useState } from "react";
+
+export default function ItemModal({ item, onClose, onAddToCart }) {
+  const [selectedOptions, setSelectedOptions] = useState({});
+
   if (!item) return null;
 
-  const { name, image, description, protein_g, customizations } = item;
+  const { name, image, description, protein_g } = item;
+  const customizations = item.customizations || {};
+
+  function toggleOption(category, option) {
+    setSelectedOptions((prev) => {
+      const categoryOptions = new Set(prev[category] || []);
+      if (categoryOptions.has(option)) {
+        categoryOptions.delete(option);
+      } else {
+        categoryOptions.add(option);
+      }
+      return {
+        ...prev,
+        [category]: Array.from(categoryOptions),
+      };
+    });
+  }
+
+  function handleAddToCart() {
+    const cartItem = {
+      ...item,
+      selectedCustomizations: selectedOptions,
+      cartId: Date.now(), // unique identifier
+    };
+    onAddToCart(cartItem);
+    onClose(); // Close modal
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000080] bg-opacity-50">
@@ -21,14 +51,20 @@ export default function ItemModal({ item, onClose }) {
         <p className="mb-2 text-gray-600 text-sm">{description}</p>
         <p className="mb-4 text-gray-500 text-xs">Protein: {protein_g}g</p>
 
-        {customizations &&
+        {Object.keys(customizations).length > 0 &&
           Object.entries(customizations).map(([category, options]) => (
             <div key={category} className="mb-4">
               <h4 className="mb-1 font-semibold text-sm capitalize">{category.replace("_", " ")}</h4>
               <div className="flex flex-wrap gap-2">
                 {options.map((opt) => (
                   <label key={opt} className="cursor-pointer rounded border px-2 py-1 text-sm hover:bg-gray-100">
-                    <input type="checkbox" className="mr-1" /> {opt}
+                    <input
+                      type="checkbox"
+                      checked={selectedOptions[category]?.includes(opt) || false}
+                      onChange={() => toggleOption(category, opt)}
+                      className="mr-1"
+                    />
+                    {opt}
                   </label>
                 ))}
               </div>
@@ -36,7 +72,11 @@ export default function ItemModal({ item, onClose }) {
           ))}
 
         <div className="mt-6">
-          <button type="button" className="w-full rounded bg-black py-2 text-white hover:bg-gray-800">
+          <button
+            type="button"
+            className="w-full rounded bg-black py-2 text-white hover:bg-gray-800"
+            onClick={handleAddToCart}
+          >
             Add to order
           </button>
         </div>

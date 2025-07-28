@@ -12,6 +12,25 @@ export default function Home() {
   const [showBestsellers, setShowBestsellers] = useState(false);
   const [sortBy, setSortBy] = useState(null);
 
+  const [cart, setCart] = useState([]);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+
+  // Sync cart to localStorage
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  function handleAddToCart(itemWithCustomizations) {
+    setCart((prev) => [...prev, itemWithCustomizations]);
+  }
+
   useEffect(() => {
     fetch("/api/dummySubwayStore")
       .then((res) => res.json())
@@ -134,7 +153,7 @@ export default function Home() {
       {renderItems(menu.beverages, "Beverages")}
 
       {/* Modal */}
-      <ItemModal item={selectedItem} onClose={() => setSelectedItem(null)} />
+      <ItemModal item={selectedItem} onClose={() => setSelectedItem(null)} onAddToCart={handleAddToCart} />
     </div>
   );
 }
