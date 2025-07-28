@@ -43,7 +43,7 @@ export async function POST(req) {
       from: "mailer@adithya.zip",
       to: email,
       subject: "Your receipt from simple-pos!",
-      text: `Hi there!\n\nThanks for your order.\n\n- Here is your receipt: http://localhost:3000/receipt?id=${randomString}`,
+      text: `Hi there!\n\nThanks for your order.\n\n- Here is your receipt: ${process.env.BASE_URL}/receipt?id=${randomString}`,
     });
   } catch {
     return server.NextResponse.json({ error: "Email failed" }, { status: 500 });
