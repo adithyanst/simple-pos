@@ -7,6 +7,7 @@ export async function GET() {
         {
           id: "sub001",
           name: "Paneer Tikka Sub",
+          image: "https://i.ibb.co/R431BdCC/paneer-tikka-sub.png",
           description: "Spicy marinated paneer with crunchy veggies and sauces.",
           price: 399,
           type: "vegetarian",
@@ -24,6 +25,7 @@ export async function GET() {
         {
           id: "sub002",
           name: "Chicken Teriyaki Sub",
+          image: "https://i.ibb.co/cS1JJH2n/chicken-teriyaki-sub.png",
           description: "Tender chicken in teriyaki sauce with fresh toppings.",
           price: 449,
           type: "non-vegetarian",
@@ -41,6 +43,7 @@ export async function GET() {
         {
           id: "sub003",
           name: "Mexican Aloo Patty Sub",
+          image: "https://i.ibb.co/3yMBrLHn/mexican-aloo-patty-sub.png",
           description: "Crispy spiced potato patty with Mexican flavors.",
           price: 399,
           type: "vegetarian",
@@ -60,6 +63,7 @@ export async function GET() {
         {
           id: "wrap001",
           name: "Veggie Delight Wrap",
+          image: "https://i.ibb.co/39gjHr8h/veggie-delight-wrap.png",
           description: "A wrap filled with crunchy fresh vegetables.",
           price: 299,
           type: "vegetarian",
@@ -76,6 +80,7 @@ export async function GET() {
         {
           id: "wrap002",
           name: "Chicken Tandoori Wrap",
+          image: "https://i.ibb.co/qG5dMrq/chicken-tandoori-wrap.png",
           description: "Tandoori-style chicken in a soft wrap.",
           price: 299,
           type: "non-vegetarian",
@@ -94,6 +99,7 @@ export async function GET() {
         {
           id: "bev001",
           name: "Coca Cola",
+          image: "https://i.ibb.co/xKkzK12B/coca-cola.png",
           description: "Classic Coke 500ml bottle.",
           price: 40,
           type: "beverage",
@@ -106,6 +112,7 @@ export async function GET() {
         {
           id: "bev002",
           name: "Bottled Water",
+          image: "https://i.ibb.co/spQbk18b/bottled-water.png",
           description: "Mineral water, 500ml.",
           price: 20,
           type: "beverage",
