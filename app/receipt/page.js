@@ -46,12 +46,13 @@ export default function ReceiptPage() {
               <p>Protein: {item.protein_g}g</p>
               <br />
               <div className="font-semibold text-md">Selected Customizations:</div>
-              {item.customizations &&
+              {item.selectedCustomizations &&
                 Object.entries(item.selectedCustomizations)
-                  .filter(([_, value]) => value && value !== "None")
+                  .filter(([_, value]) => value && value.length !== 0)
                   .map(([key, value]) => (
                     <div key={key}>
-                      <span className="font-medium">{key}:</span> {value}
+                      <span className="font-medium capitalize">{key.replace("_", " ")}:</span>{" "}
+                      {Array.isArray(value) ? value.join(", ") : value}
                     </div>
                   ))}
             </div>
