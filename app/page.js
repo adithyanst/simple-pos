@@ -77,7 +77,7 @@ export default function Home() {
     const { name, image, description, protein_g, customizations } = selectedItem;
 
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000080] bg-opacity-50">
         <div className="relative w-full max-w-md rounded-xl bg-white p-6">
           <button
             type="button"
@@ -120,6 +120,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
+      {/* Search Input */}
       <div className="mb-6 w-full">
         <input
           type="text"
@@ -175,6 +176,7 @@ export default function Home() {
         </select>
       </div>
 
+      {/* Render Items */}
       {renderItems(menu.subs, "Subs")}
       {renderItems(menu.wraps, "Wraps")}
       {renderItems(menu.beverages, "Beverages")}
